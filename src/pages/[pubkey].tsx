@@ -24,7 +24,7 @@ const ChannelListPage: NextPage<ChannelListProps> = ({
   const handleCurrentPage = (index: number) => {
     if (!(currentPageState === 0 && index < 0))
       setCurrentPage(currentPageState + index);
-    router.push(`${pubkey}/?page=${currentPageState + 1}`);
+    router.push(`${pubkey}/?page=${currentPageState + index}`);
   };
 
   return (

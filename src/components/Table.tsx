@@ -12,7 +12,7 @@ const Table: React.FC<TableProps> = ({ channelList }) => (
         <thead className="text-white">
           {channelList.map((item, i) => (
             <tr
-              className="bg-teal-400 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0"
+              className="bg-teal-400 flex flex-col flex-nowrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0"
               key={i}
             >
               <th>Short Channel ID</th>
@@ -26,7 +26,7 @@ const Table: React.FC<TableProps> = ({ channelList }) => (
         <tbody className="flex-1 sm:flex-none text-gray-700">
           {channelList?.map((item) => (
             <tr
-              className="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0"
+              className="flex flex-col flex-nowrap sm:table-row mb-2 sm:mb-0"
               key={item.long_channel_id}
             >
               <td className="td-class">{item.short_channel_id}</td>
