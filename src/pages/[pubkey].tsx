@@ -10,22 +10,21 @@ import Pagination from "@/components/Pagination";
 interface ChannelListProps {
   channelList: ChannelListType[];
   pubkey: string;
+  currentPage: number;
 }
 
 const ChannelListPage: NextPage<ChannelListProps> = ({
   channelList,
   pubkey,
+  currentPage,
 }) => {
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(0);
-
-  useEffect(() => {
-    router.push(`${pubkey}/?page=0`);
-  }, []);
+  const [currentPageState, setCurrentPage] = useState(currentPage);
 
   const handleCurrentPage = (index: number) => {
-    if (!(currentPage === 0 && index < 0)) setCurrentPage(currentPage + index);
-    router.push(`${pubkey}/?page=${currentPage + 1}`);
+    if (!(currentPageState === 0 && index < 0))
+      setCurrentPage(currentPageState + index);
+    router.push(`${pubkey}/?page=${currentPageState + 1}`);
   };
 
   return (
@@ -34,7 +33,7 @@ const ChannelListPage: NextPage<ChannelListProps> = ({
         <div className="text-4xl text-gray-700 text-center">Channel List</div>
         <Table channelList={channelList} />
         <Pagination
-          currentPage={currentPage}
+          currentPage={currentPageState}
           handleCurrentPage={handleCurrentPage}
         />
       </div>
@@ -63,6 +62,7 @@ export const getServerSideProps: GetServerSideProps<ChannelListProps> = async (
     props: {
       channelList,
       pubkey: pubkey,
+      currentPage: currentPage,
     },
   };
 };
