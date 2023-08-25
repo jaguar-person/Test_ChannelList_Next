@@ -13,8 +13,8 @@ const ChannelListPage: NextPage<any> = (data) => {
   }, [data]);
   return (
     <div className="overflow-x-auto">
-      <div className="min-w-screen min-h-screen flex flex-col items-center mt-40 font-sans overflow-hidden">
-        <div className="text-4xl text-gray-700">Channel List</div>
+      <div className="min-w-screen flex flex-col items-center mt-5 font-sans overflow-hidden">
+        <div className="text-4xl text-gray-700 text-center">Channel List</div>
         <Table data={channelList} />
       </div>
     </div>

@@ -6,40 +6,40 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = ({ data }) => (
-  <div className="w-full lg:w-5/6">
-    <div className="bg-white shadow-md rounded my-6">
-      <table className="min-w-max w-full table-auto border-collapse">
-        <thead>
-          <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-            <th className="py-3 px-6 text-center">ID</th>
-            <th className="py-3 px-6 text-center">AGE</th>
-            <th className="py-3 px-6 text-center">CAPACITY</th>
-            <th className="py-3 px-6 text-center">LAST_UPDATE</th>
-          </tr>
+  <div className="px-3 w-full md:w-fit flex items-center justify-center mx-1 sm:mx-3 text-xs md:text-sm">
+    <div className="container">
+      <table className="flex flex-row flex-no-wrap sm:bg-white md:rounded-lg overflow-hidden sm:shadow-lg my-5">
+        <thead className="text-white ">
+          {data.map((item, i) => (
+            <tr
+              className="bg-teal-400 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0"
+              key={i}
+            >
+              <th>Short Channel ID</th>
+              <th>Long Channel ID</th>
+              <th>Age</th>
+              <th>Capacity</th>
+              <th>Last Update</th>
+            </tr>
+          ))}
         </thead>
-        <tbody className="text-gray-600 text-sm font-light">
+        <tbody className="flex-1 sm:flex-none">
           {data?.map((item) => (
             <tr
-              className="border-b border-gray-200 hover:bg-gray-100"
+              className="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0"
               key={item.long_channel_id}
             >
-              <td className="py-2 px-4 text-center whitespace-nowrap">
-                <div className="flex flex-col items-center">
-                  <span>{item.short_channel_id}</span>
-                  <span className="font-medium">{item.long_channel_id}</span>
-                </div>
+              <td className="td-class">
+                <span>{item.short_channel_id}</span>
               </td>
-              <td className="py-3 px-6 text-center">
-                <div className="flex items-center justify-center">
-                  <span>{item.block_age}</span>
-                </div>
+              <td className="td-class">
+                <span>{item.long_channel_id}</span>
               </td>
-              <td className="py-3 px-6 text-center">
-                <div className="flex items-center justify-center">
-                  {item.capacity}
-                </div>
+              <td className="td-class truncate">
+                <span>{item.block_age}</span>
               </td>
-              <td className="py-3 px-6 text-center">{item.last_update_date}</td>
+              <td className="td-class truncate">{item.capacity}</td>
+              <td className="td-class truncate">{item.last_update_date}</td>
             </tr>
           ))}
         </tbody>
