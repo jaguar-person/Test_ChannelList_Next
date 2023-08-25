@@ -1,19 +1,42 @@
 import { GetServerSideProps, NextPage } from "next";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 import client from "@/config/apolloClient";
 import { GET_NODE } from "@/graphql/queries";
 import { ChannelListType } from "@/types";
 import Table from "@/components/Table";
+import Pagination from "@/components/Pagination";
 
 interface ChannelListProps {
   channelList: ChannelListType[];
+  pubkey: string;
 }
 
-const ChannelListPage: NextPage<ChannelListProps> = ({ channelList }) => {
+const ChannelListPage: NextPage<ChannelListProps> = ({
+  channelList,
+  pubkey,
+}) => {
+  const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    router.push(`${pubkey}/?page=0`);
+  }, []);
+
+  const handleCurrentPage = (index: number) => {
+    if (!(currentPage === 0 && index < 0)) setCurrentPage(currentPage + index);
+    router.push(`${pubkey}/?page=${currentPage + 1}`);
+  };
+
   return (
     <div className="overflow-x-auto">
-      <div className="min-w-screen flex flex-col items-center mt-5 font-sans overflow-hidden">
+      <div className="min-w-screen flex flex-col items-center mt-5 font-sans overflow-hidden mb-10">
         <div className="text-4xl text-gray-700 text-center">Channel List</div>
         <Table channelList={channelList} />
+        <Pagination
+          currentPage={currentPage}
+          handleCurrentPage={handleCurrentPage}
+        />
       </div>
     </div>
   );
@@ -23,12 +46,14 @@ export const getServerSideProps: GetServerSideProps<ChannelListProps> = async (
   context
 ) => {
   const pubkey = context.params?.pubkey as string;
+  const currentPage = parseInt(context.query.page as string, 10) || 0;
+
   const { data } = await client.query({
     query: GET_NODE,
     variables: {
       pubkey: pubkey,
-      page: { limit: 10, offset: 0 },
-      order: { by: "capacity", direction: "DESC" },
+      page: { limit: 10, offset: currentPage },
+      order: { by: "capacity", direction: "ASC" },
     },
   });
 
@@ -37,6 +62,7 @@ export const getServerSideProps: GetServerSideProps<ChannelListProps> = async (
   return {
     props: {
       channelList,
+      pubkey: pubkey,
     },
   };
 };
