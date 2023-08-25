@@ -1,7 +1,9 @@
 import { NextPage } from "next";
 
-const Home: NextPage = () => (
-  <div>This is a Test Project developed by Next.js</div>
+const HomePage: NextPage = () => (
+  <div className="flex items-center justify-center text-4xl mt-20 text-gray-700">
+    This is a Test Project developed by Next.js
+  </div>
 );
 
-export default Home;
+export default HomePage;

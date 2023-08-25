@@ -1,16 +1,16 @@
-import { ChannelListType } from "@/types";
 import React from "react";
+import { ChannelListType } from "@/types";
 
 interface TableProps {
-  data: ChannelListType[];
+  channelList: ChannelListType[];
 }
 
-const Table: React.FC<TableProps> = ({ data }) => (
+const Table: React.FC<TableProps> = ({ channelList }) => (
   <div className="px-3 w-full md:w-fit flex items-center justify-center mx-1 sm:mx-3 text-xs md:text-sm">
     <div className="container">
       <table className="flex flex-row flex-no-wrap sm:bg-white md:rounded-lg overflow-hidden sm:shadow-lg my-5">
-        <thead className="text-white ">
-          {data.map((item, i) => (
+        <thead className="text-white">
+          {channelList.map((item, i) => (
             <tr
               className="bg-teal-400 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0"
               key={i}
@@ -23,22 +23,16 @@ const Table: React.FC<TableProps> = ({ data }) => (
             </tr>
           ))}
         </thead>
-        <tbody className="flex-1 sm:flex-none">
-          {data?.map((item) => (
+        <tbody className="flex-1 sm:flex-none text-gray-700">
+          {channelList?.map((item) => (
             <tr
               className="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0"
               key={item.long_channel_id}
             >
-              <td className="td-class">
-                <span>{item.short_channel_id}</span>
-              </td>
-              <td className="td-class">
-                <span>{item.long_channel_id}</span>
-              </td>
-              <td className="td-class truncate">
-                <span>{item.block_age}</span>
-              </td>
-              <td className="td-class truncate">{item.capacity}</td>
+              <td className="td-class">{item.short_channel_id}</td>
+              <td className="td-class">{item.long_channel_id}</td>
+              <td className="td-class">{item.block_age}</td>
+              <td className="td-class">{item.capacity}</td>
               <td className="td-class truncate">{item.last_update_date}</td>
             </tr>
           ))}

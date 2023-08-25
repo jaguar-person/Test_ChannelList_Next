@@ -1,27 +1,27 @@
 import { GetServerSideProps, NextPage } from "next";
-import { useEffect, useState } from "react";
-
 import client from "@/config/apolloClient";
 import { GET_NODE } from "@/graphql/queries";
 import { ChannelListType } from "@/types";
 import Table from "@/components/Table";
 
-const ChannelListPage: NextPage<any> = (data) => {
-  const [channelList, setChannelList] = useState([] as ChannelListType[]);
-  useEffect(() => {
-    setChannelList(data.data.getNode.graph_info.channels.channel_list.list);
-  }, [data]);
+interface ChannelListProps {
+  channelList: ChannelListType[];
+}
+
+const ChannelListPage: NextPage<ChannelListProps> = ({ channelList }) => {
   return (
     <div className="overflow-x-auto">
       <div className="min-w-screen flex flex-col items-center mt-5 font-sans overflow-hidden">
         <div className="text-4xl text-gray-700 text-center">Channel List</div>
-        <Table data={channelList} />
+        <Table channelList={channelList} />
       </div>
     </div>
   );
 };
 
-export const getServerSideProps: GetServerSideProps<any> = async (context) => {
+export const getServerSideProps: GetServerSideProps<ChannelListProps> = async (
+  context
+) => {
   const pubkey = context.params?.pubkey as string;
   const { data } = await client.query({
     query: GET_NODE,
@@ -32,9 +32,11 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     },
   });
 
+  const channelList = data.getNode.graph_info.channels.channel_list.list;
+
   return {
     props: {
-      data,
+      channelList,
     },
   };
 };
