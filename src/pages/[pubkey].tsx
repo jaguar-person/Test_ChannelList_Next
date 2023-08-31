@@ -6,23 +6,26 @@ import { GET_NODE } from "@/graphql/queries";
 import { ChannelListType } from "@/types";
 import Table from "@/components/Table";
 import Pagination from "@/components/Pagination";
+import { channel } from "diagnostics_channel";
 
 interface ChannelListProps {
   channelList: ChannelListType[];
   pubkey: string;
   currentPage: number;
+  errorStatus: boolean;
 }
 
 const ChannelListPage: NextPage<ChannelListProps> = ({
   channelList,
   pubkey,
   currentPage,
+  errorStatus,
 }) => {
   const router = useRouter();
   const [currentPageState, setCurrentPage] = useState(currentPage);
 
   const handleCurrentPage = (index: number) => {
-    if (!(currentPageState === 0 && index < 0)) {
+    if (!(currentPageState === 0 && index < 0) && !errorStatus) {
       setCurrentPage(currentPageState + index);
       router.push(`${pubkey}/?page=${currentPageState + index}`);
     }
@@ -32,11 +35,17 @@ const ChannelListPage: NextPage<ChannelListProps> = ({
     <div className="overflow-x-auto">
       <div className="min-w-screen flex flex-col items-center mt-5 font-sans overflow-hidden mb-10">
         <div className="text-4xl text-gray-700 text-center">Channel List</div>
-        <Table channelList={channelList} />
-        <Pagination
-          currentPage={currentPageState}
-          handleCurrentPage={handleCurrentPage}
-        />
+        {errorStatus ? (
+          <div className="text-red-600 text-3xl py-6">Invaild Pub Key!</div>
+        ) : (
+          <Table channelList={channelList} />
+        )}
+        {!errorStatus && (
+          <Pagination
+            currentPage={currentPageState}
+            handleCurrentPage={handleCurrentPage}
+          />
+        )}
       </div>
     </div>
   );
@@ -48,22 +57,33 @@ export const getServerSideProps: GetServerSideProps<ChannelListProps> = async (
   const pubkey = context.params?.pubkey as string;
   const currentPage = parseInt(context.query.page as string, 10) || 0;
 
-  const { data } = await client.query({
-    query: GET_NODE,
-    variables: {
-      pubkey: pubkey,
-      page: { limit: 10, offset: currentPage },
-      order: { by: "capacity", direction: "ASC" },
-    },
-  });
+  let channelList = [] as ChannelListType[];
+  let errorStatus = false;
 
-  const channelList = data.getNode.graph_info.channels.channel_list.list;
+  try {
+    const response = await fetch("http://localhost:3000/api/channel_list", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        pubkey: pubkey,
+        currentPage: currentPage,
+      }),
+    });
+    const data = await response.json();
+    channelList = data.channelList;
+  } catch (error) {
+    console.log("Error", error);
+    errorStatus = true;
+  }
 
   return {
     props: {
       channelList,
-      pubkey: pubkey,
-      currentPage: currentPage,
+      pubkey,
+      currentPage,
+      errorStatus,
     },
   };
 };
