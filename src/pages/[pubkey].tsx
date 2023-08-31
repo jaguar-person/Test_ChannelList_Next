@@ -61,7 +61,7 @@ export const getServerSideProps: GetServerSideProps<ChannelListProps> = async (
   let errorStatus = false;
 
   try {
-    const response = await fetch("http://localhost:3000/api/channel_list", {
+    const response = await fetch(`${process.env.BASE_URL}/api/channel_list`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
